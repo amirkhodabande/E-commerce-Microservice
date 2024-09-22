@@ -1,0 +1,9 @@
+   # .air.toml
+   root = "."
+   tmp_dir = "build/tmp"
+
+   [build]
+   cmd = "go build -o build/tmp/main ."
+   bin = "build/tmp/main"
+   watch_dir = ["."]
+   watch_ext = ["go"]
