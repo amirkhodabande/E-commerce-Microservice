@@ -1,32 +1,36 @@
 package application
 
 import (
-	"reflect"
+	"errors"
 
 	"github.com/ecommerce/user/domain/contracts"
 	"github.com/ecommerce/user/domain/entities"
-	"github.com/ecommerce/user/infrastructure/persistence"
+	"github.com/ecommerce/user/domain/services"
 )
 
 type AuthService struct {
 	contracts.UserRepository
 }
 
-func NewAuthService() *AuthService {
-	container := persistence.NewContainer()
-
-	userRepository, err := container.Resolve(reflect.TypeOf((*contracts.UserRepository)(nil)))
-	if err != nil {
-		panic(err)
-	}
-
+func NewAuthService(repository contracts.UserRepository) *AuthService {
 	return &AuthService{
-		UserRepository: userRepository.(contracts.UserRepository),
+		UserRepository: repository,
 	}
 }
 
-func (service *AuthService) Register(registerData *entities.UserEntity) error {
-	service.UserRepository.Create(registerData)
+func (service *AuthService) Register(user *entities.UserEntity) (string, error) {
+	if !services.IsEmailUnique(service.UserRepository, user.GetEmail()) {
+		return "", errors.New("user already exists")
+	}
 
-	return nil
+	user.HashPassword()
+
+	service.UserRepository.Create(user)
+
+	token, err := services.GenerateToken(user)
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
 }

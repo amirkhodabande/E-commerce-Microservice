@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/ecommerce/user/infrastructure/persistence"
 	"github.com/ecommerce/user/presentation"
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
@@ -31,7 +32,9 @@ func main() {
 	address := flag.String("serverPort", os.Getenv("APP_PORT"), "")
 	flag.Parse()
 
-	presentation.RegisterRoutes(app)
+	container := persistence.NewContainer()
+
+	presentation.RegisterRoutes(app, container)
 
 	if err := app.Listen(*address); err != nil {
 		panic(err)
