@@ -12,6 +12,7 @@ import (
 )
 
 type Container struct {
+	DB       *gorm.DB
 	bindings map[reflect.Type]interface{}
 }
 
@@ -29,10 +30,19 @@ func NewContainer() *Container {
 		panic(fmt.Sprintf("Database connection failed! %v", err.Error()))
 	}
 
+	if os.Getenv("APP_ENV") == "testing" {
+		var tables []string
+		sqlDB.Raw("SHOW TABLES").Scan(&tables)
+		for _, table := range tables {
+			sqlDB.Migrator().DropTable(table)
+		}
+	}
+
 	// TODO: check this more
 	sqlDB.AutoMigrate(&models.User{})
 
 	return &Container{
+		DB: sqlDB,
 		bindings: map[reflect.Type]interface{}{
 			reflect.TypeOf((*contracts.UserRepository)(nil)): NewSqlUserRepository(sqlDB),
 		},

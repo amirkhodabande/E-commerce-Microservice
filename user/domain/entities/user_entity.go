@@ -46,7 +46,7 @@ func (entity *UserEntity) SetID(id uint) {
 }
 
 func (entity *UserEntity) HashPassword() {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(entity.password), 14)
+	bytes, err := bcrypt.GenerateFromPassword([]byte(entity.password), bcrypt.DefaultCost)
 	if err != nil {
 		panic(err)
 	}
