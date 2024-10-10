@@ -24,7 +24,7 @@ func TestRegister(t *testing.T) {
 		}
 		b, _ := json.Marshal(registerUserParams)
 
-		request := httptest.NewRequest("POST", "/api/register", bytes.NewReader(b))
+		request := httptest.NewRequest("POST", "/api/user/register", bytes.NewReader(b))
 		request.Header.Add("Content-Type", "application-json")
 
 		response, err := app.Test(request)
@@ -64,7 +64,7 @@ func TestRegister(t *testing.T) {
 			t.Error(result.Error)
 		}
 
-		request := httptest.NewRequest("POST", "/api/register", bytes.NewReader(b))
+		request := httptest.NewRequest("POST", "/api/user/register", bytes.NewReader(b))
 		request.Header.Add("Content-Type", "application-json")
 
 		response, err := app.Test(request)
@@ -73,5 +73,37 @@ func TestRegister(t *testing.T) {
 		}
 
 		assert.Equal(t, http.StatusInternalServerError, response.StatusCode)
+	})
+}
+
+func TestLogin(t *testing.T) {
+	app, repoContainer := setup(t)
+	// create user
+	user, err := entities.NewUserEntity(0, "test@example.com", "password")
+	if err != nil {
+		t.Error(err)
+	}
+	user.HashPassword()
+	repoContainer.DB.Create(&models.User{
+		Email:    user.GetEmail(),
+		Password: user.GetPassword(),
+	})
+
+	t.Run("should login user", func(t *testing.T) {
+		loginUserParams := data_objects.LoginUserParams{
+			Email:    "test@example.com",
+			Password: "password",
+		}
+		b, _ := json.Marshal(loginUserParams)
+
+		request := httptest.NewRequest("POST", "/api/user/login", bytes.NewReader(b))
+		request.Header.Add("Content-Type", "application-json")
+
+		response, err := app.Test(request)
+		if err != nil {
+			t.Error(err)
+		}
+
+		assert.Equal(t, http.StatusOK, response.StatusCode)
 	})
 }

@@ -10,7 +10,8 @@ import (
 func RegisterRoutes(app *fiber.App, container *persistence.Container) {
 	authHandler := handlers.NewAuthHandler(container)
 
-	api := app.Group("api/")
+	api := app.Group("api/user")
 
 	api.Post("/register", middlewares.ValidateRegisterUser, authHandler.Register)
+	api.Post("/login", middlewares.ValidateLoginUser, authHandler.Login)
 }

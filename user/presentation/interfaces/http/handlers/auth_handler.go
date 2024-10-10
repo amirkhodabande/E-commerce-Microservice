@@ -45,3 +45,23 @@ func (h *AuthHandler) Register(c *fiber.Ctx) error {
 		Token:   token,
 	})
 }
+
+func (h *AuthHandler) Login(c *fiber.Ctx) error {
+	params := c.Context().UserValue("params").(*data_objects.LoginUserParams)
+
+	user, err := entities.NewUserEntity(0, params.Email, params.Password)
+	if err != nil {
+		return err
+	}
+
+	token, err := h.AuthService.Login(user)
+	if err != nil {
+		return err
+	}
+
+	return c.Status(fiber.StatusOK).JSON(data_objects.LoginUserResponse{
+		Success: true,
+		Message: "Login success!",
+		Token:   token,
+	})
+}

@@ -34,3 +34,21 @@ func (service *AuthService) Register(user *entities.UserEntity) (string, error) 
 
 	return token, nil
 }
+
+func (service *AuthService) Login(userEntity *entities.UserEntity) (string, error) {
+	user, err := service.UserRepository.FindByEmail(userEntity.GetEmail())
+	if err != nil {
+		return "", err
+	}
+
+	if !user.ComparePassword(userEntity.GetPassword()) {
+		return "", errors.New("invalid password")
+	}
+
+	token, err := services.GenerateToken(user)
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
+}
