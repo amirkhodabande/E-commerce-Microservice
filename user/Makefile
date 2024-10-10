@@ -11,4 +11,4 @@ run: build
 	@./build/api
 
 test: 
-	@go test -v ./tests/
+	@go test -v ./tests/...
