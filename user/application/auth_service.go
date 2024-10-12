@@ -1,11 +1,12 @@
 package application
 
 import (
-	"errors"
+	"net/http"
 
 	"github.com/ecommerce/user/domain/contracts"
 	"github.com/ecommerce/user/domain/entities"
 	"github.com/ecommerce/user/domain/services"
+	"github.com/ecommerce/user/presentation/interfaces/http/data_objects"
 )
 
 type AuthService struct {
@@ -20,7 +21,7 @@ func NewAuthService(repository contracts.UserRepository) *AuthService {
 
 func (service *AuthService) Register(user *entities.UserEntity) (string, error) {
 	if !services.IsEmailUnique(service.UserRepository, user.GetEmail()) {
-		return "", errors.New("user already exists")
+		return "", data_objects.NewApiError(http.StatusBadRequest, "user already exists")
 	}
 
 	user.HashPassword()
@@ -42,7 +43,7 @@ func (service *AuthService) Login(userEntity *entities.UserEntity) (string, erro
 	}
 
 	if !user.ComparePassword(userEntity.GetPassword()) {
-		return "", errors.New("invalid password")
+		return "", data_objects.NewApiError(http.StatusUnauthorized, "invalid password")
 	}
 
 	token, err := services.GenerateToken(user)

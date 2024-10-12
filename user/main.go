@@ -9,14 +9,20 @@ import (
 
 	"github.com/ecommerce/user/infrastructure/persistence"
 	"github.com/ecommerce/user/presentation"
+	"github.com/ecommerce/user/presentation/interfaces/http/data_objects"
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
 )
 
 var app = fiber.New(fiber.Config{
 	ErrorHandler: func(ctx *fiber.Ctx, err error) error {
-		return ctx.Status(http.StatusInternalServerError).JSON(map[string]any{
-			// move to custom response objects
+		status := http.StatusInternalServerError
+
+		if customErr, ok := err.(*data_objects.ApiError); ok {
+			status = customErr.Status
+		}
+
+		return ctx.Status(status).JSON(map[string]any{
 			"message": err.Error(),
 		})
 	},
