@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"reflect"
 
 	"github.com/ecommerce/user/application"
@@ -27,7 +28,10 @@ func NewAuthHandler(container *persistence.Container) *AuthHandler {
 }
 
 func (h *AuthHandler) Register(c *fiber.Ctx) error {
-	params := c.Context().UserValue("params").(*data_objects.RegisterUserParams)
+	requestID := c.Locals("requestID").(string)
+	fmt.Println("Request ID:", requestID)
+
+	params := c.Locals("params").(*data_objects.RegisterUserParams)
 
 	user, err := entities.NewUserEntity(0, params.Email, params.Password)
 	if err != nil {
@@ -47,7 +51,10 @@ func (h *AuthHandler) Register(c *fiber.Ctx) error {
 }
 
 func (h *AuthHandler) Login(c *fiber.Ctx) error {
-	params := c.Context().UserValue("params").(*data_objects.LoginUserParams)
+	requestID := c.Locals("requestID").(string)
+	fmt.Println("Request ID:", requestID)
+
+	params := c.Locals("params").(*data_objects.LoginUserParams)
 
 	user, err := entities.NewUserEntity(0, params.Email, params.Password)
 	if err != nil {

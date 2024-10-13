@@ -19,7 +19,7 @@ func ValidateLoginUser(c *fiber.Ctx) error {
 		})
 	}
 
-	c.Context().SetUserValue("params", params)
+	c.Locals("params", params)
 
 	return c.Next()
 }
