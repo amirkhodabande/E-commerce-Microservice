@@ -38,12 +38,12 @@ func LoginUser(data data_objects.LoginUserData) (*data_objects.LoginUserResponse
 		return nil, err
 	}
 
-	var loginResponse data_objects.LoginUserResponse
+	var loginResponse *data_objects.LoginUserResponse
 	err = json.Unmarshal(body, &loginResponse)
 	if err != nil {
 		return nil, err
 	}
 	loginResponse.Status = response.StatusCode
 
-	return &loginResponse, nil
+	return loginResponse, nil
 }
