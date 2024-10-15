@@ -14,7 +14,7 @@ Each service provides clients that the gateway uses to communicate with them. Th
 Additionally, a validation layer is included for these clients.
 
 **structure**
-```json
+```
 clients
 ├── user
 │   ├── http
