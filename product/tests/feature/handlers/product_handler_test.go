@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 
 	"github.com/ecommerce/product/domain/entities"
@@ -62,5 +63,36 @@ func TestGetProducts(t *testing.T) {
 
 		assert.Equal(t, http.StatusOK, res.StatusCode)
 		assert.Equal(t, string(exceptedRes), string(encodedRes))
+	})
+
+	t.Run("name filter is working", func(t *testing.T) {
+		baseURL := "/api/products"
+		params := url.Values{}
+		params.Add("name", "third test")
+
+		requestURL := baseURL + "?" + params.Encode()
+		request := httptest.NewRequest("GET", requestURL, nil)
+		request.Header.Add("Content-Type", "application-json")
+
+		res, err := app.Test(request)
+		if err != nil {
+			t.Error(err)
+		}
+
+		var productEntities []*entities.ProductEntity
+		productEntities = append(productEntities, products[2].ToEntity())
+
+		encodedRes, err := io.ReadAll(res.Body)
+		if err != nil {
+			t.Error(err)
+		}
+		expectedRes, _ := json.Marshal(data_objects.ListProductResponse{
+			Success: true,
+			Message: "Success",
+			Data:    productEntities,
+		})
+
+		assert.Equal(t, http.StatusOK, res.StatusCode)
+		assert.Equal(t, string(expectedRes), string(encodedRes))
 	})
 }
