@@ -19,8 +19,8 @@ func NewProductService(repository contracts.ProductRepository) *ProductService {
 	}
 }
 
-func (service *ProductService) GetProducts(requestID string) ([]*entities.ProductEntity, error) {
-	products, err := service.ProductRepository.FindAll()
+func (service *ProductService) GetProducts(requestID string, queryParams *data_objects.ListProductParams) ([]*entities.ProductEntity, error) {
+	products, err := service.ProductRepository.FindAll(queryParams)
 
 	if err != nil {
 		log.Printf("Request ID: %s, Error: %s", requestID, err.Error())

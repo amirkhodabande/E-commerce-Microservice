@@ -5,6 +5,7 @@ import (
 
 	"github.com/ecommerce/product/domain/entities"
 	"github.com/ecommerce/product/infrastructure/models"
+	"github.com/ecommerce/product/presentation/interfaces/http/data_objects"
 	"gorm.io/gorm"
 )
 
@@ -18,9 +19,28 @@ func NewSqlProductRepository(db *gorm.DB) *SqlProductRepository {
 	}
 }
 
-func (r *SqlProductRepository) FindAll() ([]*entities.ProductEntity, error) {
+func (r *SqlProductRepository) FindAll(queryParams *data_objects.ListProductParams) ([]*entities.ProductEntity, error) {
+	limit := queryParams.Limit
+	if limit == 0 {
+		limit = 10
+	}
+	offset := (queryParams.Page - 1) * limit
+
 	var productModels []models.Product
-	result := r.db.Find(&productModels)
+	query := r.db.Limit(limit).Offset(offset).
+		Where("name LIKE ?", "%"+queryParams.Name+"%")
+
+	switch queryParams.SortBy {
+	case "most_expensive":
+		query = query.Order("price DESC")
+	case "cheapest":
+		query = query.Order("price ASC")
+	case "newest":
+		query = query.Order("created_at DESC")
+	}
+
+	result := query.Find(&productModels)
+
 	if result.Error != nil {
 		fmt.Printf("Error fetching products: %+v\n", result.Error)
 		return nil, result.Error

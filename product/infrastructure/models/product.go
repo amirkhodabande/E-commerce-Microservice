@@ -19,5 +19,8 @@ func (model *Product) ToEntity() *entities.ProductEntity {
 		Name:        model.Name,
 		Description: model.Description,
 		Price:       uint(model.Price),
+		CreatedAt:   model.CreatedAt,
+		UpdatedAt:   model.UpdatedAt,
+		DeletedAt:   model.DeletedAt.Time,
 	}
 }

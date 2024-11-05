@@ -12,5 +12,5 @@ func RegisterRoutes(app *fiber.App, container *persistence.Container) {
 
 	api := app.Group("api/products", middlewares.RequestIdMiddleware)
 
-	api.Get("/", productHandler.GetProducts)
+	api.Get("/", middlewares.ValidateListProduct, productHandler.GetProducts)
 }

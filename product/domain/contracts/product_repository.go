@@ -1,7 +1,10 @@
 package contracts
 
-import "github.com/ecommerce/product/domain/entities"
+import (
+	"github.com/ecommerce/product/domain/entities"
+	"github.com/ecommerce/product/presentation/interfaces/http/data_objects"
+)
 
 type ProductRepository interface {
-	FindAll() ([]*entities.ProductEntity, error)
+	FindAll(queryParams *data_objects.ListProductParams) ([]*entities.ProductEntity, error)
 }

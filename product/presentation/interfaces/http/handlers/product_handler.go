@@ -29,8 +29,10 @@ func NewProductHandler(container *persistence.Container) *ProductHandler {
 func (h *ProductHandler) GetProducts(ctx *fiber.Ctx) error {
 	requestID := ctx.Locals("requestID").(string)
 	fmt.Println("Request ID:", requestID)
+	
+	queryParams := ctx.Locals("query-params").(*data_objects.ListProductParams)
 
-	products, err := h.ProductService.GetProducts(requestID)
+	products, err := h.ProductService.GetProducts(requestID, queryParams)
 	if err != nil {
 		return err
 	}

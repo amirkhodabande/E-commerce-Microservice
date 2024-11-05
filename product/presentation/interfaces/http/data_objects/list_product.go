@@ -7,3 +7,10 @@ type ListProductResponse struct {
 	Message string                    `json:"message"`
 	Data    []*entities.ProductEntity `json:"data"`
 }
+
+type ListProductParams struct {
+	Name   string `query:"name,omitempty" validate:"omitempty"`
+	Page   int    `query:"page,omitempty" validate:"omitempty,min=1"`
+	Limit  int    `query:"limit,omitempty" validate:"omitempty,min=1,max=100"`
+	SortBy string `query:"sort_by,omitempty" validate:"omitempty,oneof=most_expensive cheapest newest"`
+}
