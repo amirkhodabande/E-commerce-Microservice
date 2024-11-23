@@ -33,30 +33,11 @@ func main() {
 	flag.Parse()
 
 	routes.RegisterUserRoutes(app)
+	routes.RegisterProductRoutes(app)
 
 	if err := app.Listen(*address); err != nil {
 		panic(err)
 	}
 
 	fmt.Printf("Listening to %v \n", address)
-
-	// registerUser := data_objects.RegisterUserData{
-	// 	Email:    "test@test.com",
-	// 	Password: "test1234",
-	// }
-
-	// res, err := clients.RegisterUser(registerUser)
-
-	// fmt.Printf("%+v", res)
-	// fmt.Printf("%+v", err)
-
-	// loginUser := data_objects.LoginUserData{
-	// 	Email:    "test@test.com",
-	// 	Password: "test1234",
-	// }
-
-	// res, err := clients.LoginUser(loginUser)
-
-	// fmt.Printf("%+v", res)
-	// fmt.Printf("%+v", err)
 }
