@@ -35,7 +35,7 @@ func TestGetProducts(t *testing.T) {
 			Name:        "second test product",
 			Description: "second test product description",
 			Price:       200,
-			ParentID:    parentCategory.ID,
+			CategoryID:  parentCategory.ID,
 		},
 		{
 			Name:        "third test product",
@@ -109,7 +109,7 @@ func TestGetProducts(t *testing.T) {
 		baseURL := "/api/products"
 		params := url.Values{}
 
-		params.Add("parent_id", strconv.Itoa(int(parentCategory.ID)))
+		params.Add("category_id", strconv.Itoa(int(parentCategory.ID)))
 
 		requestURL := baseURL + "?" + params.Encode()
 		request := httptest.NewRequest("GET", requestURL, nil)

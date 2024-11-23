@@ -29,7 +29,7 @@ func (r *SqlCategoryRepository) FindAll() ([]*entities.CategoryEntity, error) {
 	}
 
 	var categories []*entities.CategoryEntity
-	fmt.Printf("%++v\n", categoryModels)
+
 	for _, model := range categoryModels {
 		categories = append(categories, model.ToEntity())
 	}
