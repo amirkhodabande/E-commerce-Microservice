@@ -9,8 +9,11 @@ import (
 
 func RegisterRoutes(app *fiber.App, container *persistence.Container) {
 	productHandler := handlers.NewProductHandler(container)
+	categoryHandler := handlers.NewCategoryHandler(container)
 
 	api := app.Group("api/products", middlewares.RequestIdMiddleware)
 
 	api.Get("/", middlewares.ValidateListProduct, productHandler.GetProducts)
+
+	api.Get("/categories", categoryHandler.GetCategories)
 }

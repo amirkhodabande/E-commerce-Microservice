@@ -39,12 +39,13 @@ func NewContainer() *Container {
 	}
 
 	// TODO: check this more
-	sqlDB.AutoMigrate(&models.Product{})
+	sqlDB.AutoMigrate(&models.Product{}, &models.Category{})
 
 	return &Container{
 		DB: sqlDB,
 		bindings: map[reflect.Type]interface{}{
-			reflect.TypeOf((*contracts.ProductRepository)(nil)): NewSqlProductRepository(sqlDB),
+			reflect.TypeOf((*contracts.ProductRepository)(nil)):  NewSqlProductRepository(sqlDB),
+			reflect.TypeOf((*contracts.CategoryRepository)(nil)): NewSqlCategoryRepository(sqlDB),
 		},
 	}
 }
