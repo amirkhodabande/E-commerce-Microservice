@@ -2,10 +2,12 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"strconv"
 	"testing"
 
 	"github.com/ecommerce/product/domain/entities"
@@ -17,9 +19,16 @@ import (
 func TestGetProducts(t *testing.T) {
 	app, repoContainer := setup(t)
 
+	parentCategory := models.Category{
+		Name:        "parent category",
+		Description: "parent category description",
+		ParentID:    nil,
+	}
+	repoContainer.DB.Create(&parentCategory)
+
 	products := []models.Product{
 		{
-			Name:        "test2 product",
+			Name:        "test product",
 			Description: "test product description",
 			Price:       100,
 		},
@@ -27,6 +36,7 @@ func TestGetProducts(t *testing.T) {
 			Name:        "second test product",
 			Description: "second test product description",
 			Price:       200,
+			ParentID:    parentCategory.ID,
 		},
 		{
 			Name:        "third test product",
@@ -81,6 +91,39 @@ func TestGetProducts(t *testing.T) {
 
 		var productEntities []*entities.ProductEntity
 		productEntities = append(productEntities, products[2].ToEntity())
+
+		encodedRes, err := io.ReadAll(res.Body)
+		if err != nil {
+			t.Error(err)
+		}
+		expectedRes, _ := json.Marshal(data_objects.ListProductResponse{
+			Success: true,
+			Message: "Success",
+			Data:    productEntities,
+		})
+
+		assert.Equal(t, http.StatusOK, res.StatusCode)
+		assert.Equal(t, string(expectedRes), string(encodedRes))
+	})
+
+	t.Run("category filter is working", func(t *testing.T) {
+		baseURL := "/api/products"
+		params := url.Values{}
+		fmt.Println(parentCategory.ID)
+		fmt.Println("---------------")
+		params.Add("parent_id", strconv.Itoa(int(parentCategory.ID)))
+
+		requestURL := baseURL + "?" + params.Encode()
+		request := httptest.NewRequest("GET", requestURL, nil)
+		request.Header.Add("Content-Type", "application-json")
+
+		res, err := app.Test(request)
+		if err != nil {
+			t.Error(err)
+		}
+
+		var productEntities []*entities.ProductEntity
+		productEntities = append(productEntities, products[1].ToEntity())
 
 		encodedRes, err := io.ReadAll(res.Body)
 		if err != nil {

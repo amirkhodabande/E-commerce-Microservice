@@ -21,7 +21,7 @@ func NewSqlCategoryRepository(db *gorm.DB) *SqlCategoryRepository {
 func (r *SqlCategoryRepository) FindAll() ([]*entities.CategoryEntity, error) {
 	var categoryModels []models.Category
 
-	result := r.db.Preload("Children").Where("category_id IS NULL").Find(&categoryModels)
+	result := r.db.Preload("Children").Where("parent_id IS NULL").Find(&categoryModels)
 
 	if result.Error != nil {
 		fmt.Printf("Error fetching categories: %+v\n", result.Error)
