@@ -29,9 +29,9 @@ func (r *SqlProductRepository) FindAll(queryParams *data_objects.ListProductPara
 	var productModels []models.Product
 	query := r.db.Limit(limit).Offset(offset).
 		Where("name LIKE ?", "%"+queryParams.Name+"%")
-	
+
 	if queryParams.CategoryID != 0 {
-		query = query.Where("parent_id = ?", queryParams.CategoryID)
+		query = query.Where("category_id = ?", queryParams.CategoryID)
 	}
 
 	switch queryParams.SortBy {

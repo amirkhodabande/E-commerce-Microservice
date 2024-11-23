@@ -22,6 +22,5 @@ func (model *Product) ToEntity() *entities.ProductEntity {
 		Price:       uint(model.Price),
 		CreatedAt:   model.CreatedAt,
 		UpdatedAt:   model.UpdatedAt,
-		DeletedAt:   model.DeletedAt.Time,
 	}
 }
