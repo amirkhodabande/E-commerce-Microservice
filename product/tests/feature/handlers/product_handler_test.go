@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -109,8 +108,7 @@ func TestGetProducts(t *testing.T) {
 	t.Run("category filter is working", func(t *testing.T) {
 		baseURL := "/api/products"
 		params := url.Values{}
-		fmt.Println(parentCategory.ID)
-		fmt.Println("---------------")
+
 		params.Add("parent_id", strconv.Itoa(int(parentCategory.ID)))
 
 		requestURL := baseURL + "?" + params.Encode()
