@@ -11,6 +11,7 @@ type Product struct {
 	Description string
 	Price       float64
 	CategoryID  uint
+	Category    Category `gorm:"foreignKey:CategoryID"`
 }
 
 func (model *Product) ToEntity() *entities.ProductEntity {

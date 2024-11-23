@@ -30,6 +30,10 @@ func (r *SqlProductRepository) FindAll(queryParams *data_objects.ListProductPara
 	query := r.db.Limit(limit).Offset(offset).
 		Where("name LIKE ?", "%"+queryParams.Name+"%")
 
+	if queryParams.CategoryID != 0 {
+		query = query.Where("category_id = ?", queryParams.CategoryID)
+	}
+
 	switch queryParams.SortBy {
 	case "most_expensive":
 		query = query.Order("price DESC")
