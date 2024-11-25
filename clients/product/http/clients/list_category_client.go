@@ -10,7 +10,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func ListCategory() (*data_objects.ListCategoryResponse, error) {
+func ListCategory(requestID string) (*data_objects.ListCategoryResponse, error) {
 	err := godotenv.Load("../clients/.env")
 	if err != nil {
 		panic(err)
@@ -22,6 +22,7 @@ func ListCategory() (*data_objects.ListCategoryResponse, error) {
 		return nil, err
 	}
 	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("X-Request-ID", requestID)
 
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {

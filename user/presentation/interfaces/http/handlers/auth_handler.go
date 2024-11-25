@@ -29,7 +29,7 @@ func NewAuthHandler(container *persistence.Container) *AuthHandler {
 
 func (h *AuthHandler) Register(c *fiber.Ctx) error {
 	requestID := c.Locals("requestID").(string)
-	fmt.Println("Request ID:", requestID)
+	fmt.Println("Register| Request ID:", requestID)
 
 	params := c.Locals("params").(*data_objects.RegisterUserParams)
 

@@ -11,7 +11,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func RegisterUser(data data_objects.RegisterUserData) (*data_objects.RegisterUserResponse, error) {
+func RegisterUser(data data_objects.RegisterUserData, requestID string) (*data_objects.RegisterUserResponse, error) {
 	err := godotenv.Load("../clients/.env")
 	if err != nil {
 		panic(err)
@@ -27,6 +27,7 @@ func RegisterUser(data data_objects.RegisterUserData) (*data_objects.RegisterUse
 		return nil, err
 	}
 	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("X-Request-ID", requestID)
 
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {

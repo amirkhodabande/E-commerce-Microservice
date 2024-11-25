@@ -11,7 +11,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func ListProduct(data data_objects.ListProductData) (*data_objects.ListProductResponse, error) {
+func ListProduct(data data_objects.ListProductData, requestID string) (*data_objects.ListProductResponse, error) {
 	err := godotenv.Load("../clients/.env")
 	if err != nil {
 		panic(err)
@@ -28,6 +28,7 @@ func ListProduct(data data_objects.ListProductData) (*data_objects.ListProductRe
 		return nil, err
 	}
 	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("X-Request-ID", requestID)
 
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
