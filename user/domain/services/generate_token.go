@@ -19,3 +19,13 @@ func GenerateToken(user *entities.UserEntity) (string, error) {
 
 	return tokenStr, nil
 }
+
+func GenerateServiceToken(name string) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"name": name,
+	})
+	secret := os.Getenv("JWT_SECRET")
+	tokenStr, _ := token.SignedString([]byte(secret))
+
+	return tokenStr, nil
+}

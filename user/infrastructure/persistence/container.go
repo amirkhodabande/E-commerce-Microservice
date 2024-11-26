@@ -39,12 +39,13 @@ func NewContainer() *Container {
 	}
 
 	// TODO: check this more
-	sqlDB.AutoMigrate(&models.User{})
+	sqlDB.AutoMigrate(&models.User{}, &models.AccessToken{})
 
 	return &Container{
 		DB: sqlDB,
 		bindings: map[reflect.Type]interface{}{
-			reflect.TypeOf((*contracts.UserRepository)(nil)): NewSqlUserRepository(sqlDB),
+			reflect.TypeOf((*contracts.UserRepository)(nil)):        NewSqlUserRepository(sqlDB),
+			reflect.TypeOf((*contracts.AccessTokenRepository)(nil)): NewSqlAccessTokenRepository(sqlDB),
 		},
 	}
 }
